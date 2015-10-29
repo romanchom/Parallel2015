@@ -8,7 +8,10 @@ thread::thread(unsigned long (WINAPI *function)(void *), void * parameter)
 
 thread::~thread()
 {
-	TerminateProcess(mHandle, -1);
+	DWORD result = WaitForSingleObject(mHandle, 0);
+	if (result != WAIT_OBJECT_0) { // thread still alive, lets kill it the ugly way
+		TerminateProcess(mHandle, -1);
+	}
 	CloseHandle(mHandle);
 }
 

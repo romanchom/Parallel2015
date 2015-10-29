@@ -2,3 +2,5 @@
 *.sdf
 parallel/Debug/
 ipch/
+parallel/x64/
+histogram/x64/

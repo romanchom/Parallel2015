@@ -21,21 +21,18 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="semaphore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="thread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="threadTask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="parallel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="semaphore.cpp">

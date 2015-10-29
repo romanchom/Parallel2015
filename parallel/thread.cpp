@@ -3,7 +3,7 @@
 
 thread::thread(unsigned long (WINAPI *function)(void *), void * parameter)
 {
-	CreateThread(nullptr, 0, function, parameter, 0, nullptr);
+	mHandle = CreateThread(nullptr, 0, function, parameter, 0, nullptr);
 }
 
 thread::~thread()

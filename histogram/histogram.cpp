@@ -8,9 +8,9 @@
 
 struct finalResult {
 	size_t result[256];
-	semaphore mutex;
+	semaphore sem;
 
-	finalResult() : mutex(1) { memset(result, 0, sizeof(result)); }
+	finalResult() : sem(1) { memset(result, 0, sizeof(result)); }
 
 	void printResult() {
 		for (int i = 0; i < 256; ++i) {
@@ -33,11 +33,11 @@ unsigned long WINAPI threadFunc(void * param) {
 		result[*p]++;
 	}
 
-	task.pFinalResult->mutex.wait();
+	task.pFinalResult->sem.wait();
 	for (int i = 0; i < 256; ++i) {
 		task.pFinalResult->result[i] += result[i];
 	}
-	task.pFinalResult->mutex.signal();
+	task.pFinalResult->sem.signal();
 
 	return 0;
 }
@@ -72,27 +72,26 @@ int main(int argc, char * argv[])
 
 	finalResult result;
 
-	workItem * items = new workItem[threadCount];
+	threadTask * tasks = new threadTask[threadCount];
+	thread * threads = new thread[threadCount];
+	unsigned char * begin = data;
 	for (int i = 0; i < threadCount; ++i) {
-		threadTask & task = items[i].task;
-		task.begin	= (unsigned char *) data + (dataLenght * i / threadCount);
-		task.end	= (unsigned char *) data + (dataLenght * (i + 1) / threadCount);
+		threadTask & task = tasks[i];
+		task.begin	= begin;
+		begin		= (unsigned char *)data + (dataLenght * (i + 1) / threadCount);
+		task.end	= begin;
 		task.pFinalResult = &result;
 
-		items[i].t = new thread(threadFunc, (void *) &items[i].task);
+		threads[i].start(threadFunc, (void *) &tasks[i]);
 	}
 
-	for (int i = 0; i < threadCount; ++i) {
-		items[i].t->join();
-	}
+	waitable::waitForAll(threadCount, threads);
 
 	result.printResult();
 
 	delete[] data;
-	for (int i = 0; i < threadCount; ++i) {
-		delete items[i].t;
-	}
-	delete[] items;
+	delete[] threads;
+	delete[] tasks;
 
 	std::cin.get();
 	return 0;

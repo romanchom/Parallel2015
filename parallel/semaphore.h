@@ -1,12 +1,11 @@
 #pragma once
-class semaphore
+
+#include "waitable.h"
+
+class semaphore : public waitable
 {
 public:
 	semaphore(unsigned initial);
-	~semaphore();
-	void wait();
 	void signal();
-private:
-	HANDLE mHandle;
 };
 

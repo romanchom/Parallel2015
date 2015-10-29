@@ -1,11 +1,11 @@
 #pragma once
-class thread
+
+#include "waitable.h"
+
+class thread : public waitable
 {
 public:
-	thread(unsigned long (WINAPI* function)(void *), void * parameter);
-	~thread();
-	void join();
-private:
-	HANDLE mHandle;
+	void start(LPTHREAD_START_ROUTINE function, LPVOID parameter);
+	virtual ~thread() override;
 };
 

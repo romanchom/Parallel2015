@@ -23,7 +23,7 @@ void waitable::waitForAll(size_t count, waitable waitables[])
 	for (int i = 0; i < count; ++i) {
 		handles[i] = waitables[i].mHandle;
 	}
-	WaitForMultipleObjects(count, handles, true, -1);
+	DWORD ret = WaitForMultipleObjects(count, handles, true, INFINITE);
 	delete[] handles;
 }
 
@@ -33,6 +33,6 @@ void waitable::waitForAny(size_t count, waitable waitables[])
 	for (int i = 0; i < count; ++i) {
 		handles[i] = waitables[i].mHandle;
 	}
-	WaitForMultipleObjects(count, handles, false, -1);
+	WaitForMultipleObjects(count, handles, false, INFINITE);
 	delete[] handles;
 }

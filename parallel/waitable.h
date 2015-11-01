@@ -17,6 +17,7 @@ public:
 protected:
 	waitable();
 	HANDLE mHandle;
+	static void doWait(size_t count, waitable waitables[], bool all);
 private:
 	static HANDLE getHandle(waitable * w) { return w->mHandle; }
 };

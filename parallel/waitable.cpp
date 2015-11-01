@@ -17,22 +17,26 @@ void waitable::wait()
 	WaitForSingleObject(mHandle, -1);
 }
 
+
+void waitable::doWait(size_t count, waitable waitables[], bool all)
+{
+	HANDLE handles[MAXIMUM_WAIT_OBJECTS];
+	for (int i = 0; i < count;) {
+		int p = count - i;
+		for (int j = 0; j < p; ++j) {
+			handles[j] = waitables[i].mHandle;
+		}
+		WaitForMultipleObjects(p, handles, all, INFINITE);
+		i += p;
+	}
+}
+
 void waitable::waitForAll(size_t count, waitable waitables[])
 {
-	HANDLE * handles = new HANDLE[count];
-	for (int i = 0; i < count; ++i) {
-		handles[i] = waitables[i].mHandle;
-	}
-	DWORD ret = WaitForMultipleObjects(count, handles, true, INFINITE);
-	delete[] handles;
+	doWait(count, waitables, true);
 }
 
 void waitable::waitForAny(size_t count, waitable waitables[])
 {
-	HANDLE * handles = new HANDLE[count];
-	for (int i = 0; i < count; ++i) {
-		handles[i] = waitables[i].mHandle;
-	}
-	WaitForMultipleObjects(count, handles, false, INFINITE);
-	delete[] handles;
+	doWait(count, waitables, false);
 }

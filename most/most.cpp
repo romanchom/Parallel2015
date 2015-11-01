@@ -24,12 +24,12 @@ unsigned long WINAPI carThread(void * data) {
 
 int main()
 {
-	const int carCount = 60;
+	const int carCount = 1000;
 	thread * cars = new thread[carCount];
 	int * side = new int[carCount];
 
 	std::default_random_engine rand(123123);
-	std::uniform_int_distribution<int> dist(0, 1000);
+	std::uniform_int_distribution<int> dist(0, carCount);
 
 	for (int i = 0; i < carCount; ++i) {
 		//side[i] = dist(rand);

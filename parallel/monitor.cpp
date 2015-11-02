@@ -22,5 +22,6 @@ void monitorBase::wait()
 
 void monitorBase::wakeConditionVariable()
 {
-	WakeAllConditionVariable(&mConditionVariable);
+	//WakeAllConditionVariable(&mConditionVariable);
+	WakeConditionVariable(&mConditionVariable);
 }

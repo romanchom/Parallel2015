@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{BE6C8A29-E1CD-48B9-8D2A-93F5AFA0C06C}</ProjectGuid>
+    <ProjectGuid>{D7647126-4A26-4DCD-86A2-C38E9C45BDB9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>most</RootNamespace>
+    <RootNamespace>mostRendezvous</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -88,6 +88,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
       <AdditionalIncludeDirectories>$(SolutionDir)parallel\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -102,6 +104,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
       <AdditionalIncludeDirectories>$(SolutionDir)parallel\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -118,6 +122,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
       <AdditionalIncludeDirectories>$(SolutionDir)parallel\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -136,6 +142,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
       <AdditionalIncludeDirectories>$(SolutionDir)parallel\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -149,7 +157,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="most.cpp" />
+    <ClCompile Include="mostRendezvous.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\parallel\parallel.vcxproj">

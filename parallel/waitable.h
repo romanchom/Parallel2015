@@ -5,11 +5,10 @@ public:
 	virtual ~waitable();
 	void wait();
 
-	static void waitForAll(size_t count, waitable waitables[]);
+	static void waitForAll(size_t count, waitable ** waitables);
 	template<typename... objects>
 	static void waitForAll(waitable * w, objects... obj);
 	
-	static void waitForAny(size_t count, waitable waitables[]);
 	template<typename... objects>
 	static void waitForAny(waitable * w, objects... obj);
 
@@ -17,7 +16,6 @@ public:
 protected:
 	waitable();
 	HANDLE mHandle;
-	static void doWait(size_t count, waitable waitables[], bool all);
 private:
 	static HANDLE getHandle(waitable * w) { return w->mHandle; }
 };

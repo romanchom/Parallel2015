@@ -24,17 +24,22 @@ unsigned long WINAPI carThread(void * data) {
 
 int main()
 {
-	const int carCount = 200;
-	thread * cars = new thread[carCount];
+	const int carCount = 40;
+	thread ** cars = new thread*[carCount];
 	int * side = new int[carCount];
 
 	for (int i = 0; i < carCount; ++i) {
 		side[i] = i;
-		cars[i].start(carThread, side + i);
+		cars[i] = new thread();
+		cars[i]->start(carThread, side + i);
 	}
 
 
-	waitable::waitForAll(carCount, cars);
+	waitable::waitForAll(carCount, (waitable**) cars);
+
+	for (int i = 0; i < carCount; ++i) {
+		delete cars[i];
+	}
 	delete[] side;
 	delete[] cars;
     return 0;

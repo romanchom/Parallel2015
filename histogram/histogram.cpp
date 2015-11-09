@@ -5,6 +5,7 @@
 #include "semaphore.h"
 #include "thread.h"
 #include "threadTask.h"
+#include "stopWatch.h"
 
 struct finalResult {
 	size_t result[256];
@@ -50,8 +51,8 @@ struct workItem {
 
 int main(int argc, char * argv[])
 {
-	if (argc < 2) {
-		std::cout << "Parametry: liczba watkow." << std::endl;
+	if (argc < 3) {
+		std::cout << "Parametry: liczba watkow, nazwa pliku" << std::endl;
 		return -1;
 	}
 	int threadCount = atoi(argv[1]);
@@ -59,7 +60,7 @@ int main(int argc, char * argv[])
 	size_t dataLenght;
 	unsigned char * data;
 	{
-		std::ifstream file(argv[0], std::fstream::in | std::fstream::binary);
+		std::ifstream file(argv[2], std::fstream::in | std::fstream::binary);
 		if (!file.good()) return -2;
 		file.seekg(0, std::ios::end);
 		dataLenght = file.tellg();
@@ -73,23 +74,32 @@ int main(int argc, char * argv[])
 	finalResult result;
 
 	threadTask * tasks = new threadTask[threadCount];
-	thread * threads = new thread[threadCount];
+	thread ** threads = new thread*[threadCount];
 	unsigned char * begin = data;
+
 	for (int i = 0; i < threadCount; ++i) {
 		threadTask & task = tasks[i];
-		task.begin	= begin;
-		begin		= (unsigned char *)data + (dataLenght * (i + 1) / threadCount);
-		task.end	= begin;
+		task.begin = begin;
+		begin = (unsigned char *)data + (dataLenght * (i + 1) / threadCount);
+		task.end = begin;
 		task.pFinalResult = &result;
-
-		threads[i].start(threadFunc, (void *) &tasks[i]);
+		threads[i] = new thread();
 	}
-
-	waitable::waitForAll(threadCount, threads);
-
-	result.printResult();
+	stopWatch time;
+	for (int i = 0; i < threadCount; ++i) {
+		threads[i]->start(threadFunc, (void *) &tasks[i]);
+	}
+	
+	waitable::waitForAll(threadCount, (waitable **) threads); // kinda ugly hack
+	double s = time.seconds();
+	std::cout << "Time: " << s << std::endl;
+	//result.printResult();
 
 	delete[] data;
+
+	for (int i = 0; i < threadCount; ++i) {
+		delete threads[i];
+	}
 	delete[] threads;
 	delete[] tasks;
 

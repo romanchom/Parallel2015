@@ -93,7 +93,7 @@ int main(int argc, char * argv[])
 	waitable::waitForAll(threadCount, (waitable **) threads); // kinda ugly hack
 	double s = time.seconds();
 	std::cout << "Time: " << s << std::endl;
-	//result.printResult();
+	result.printResult();
 
 	delete[] data;
 

@@ -8,12 +8,11 @@
 
 struct carData
 {
-	int parity;
-	bool crossed;
-	semaphore lock;
+	uint32_t parity;
+	semaphore crossed;
 
-	carData() : parity(0), crossed(false), lock(1) {}
-	carData(int p) : parity(p), crossed(false), lock(1) {}
+	carData() : parity(0), crossed(0, 1) {}
+	carData(uint32_t p) : parity(p), crossed(0, 1) {}
 };
 
 volatile bool abortServer;
@@ -21,28 +20,21 @@ std::queue<carData*> taskQueue;
 semaphore taskQueueLock(1);
 HANDLE timer;
 
-void crossBridgeRandezvous(carData* data)
+void crossBridgeRendezvous(carData* data)
 {
 	taskQueueLock.wait();
 	taskQueue.push(data);
 	taskQueueLock.signal();
 
-	bool crossed = false;
-	while (!crossed)
-	{
-		//data->lock.wait();
-		crossed = data->crossed;
-		//data->lock.signal();
-
-		WaitForSingleObject(timer, 50);
-	}
+	data->crossed.wait();
+	//WaitForSingleObject(timer, 50);
 }
 
 unsigned long WINAPI carThread(void* data) 
 {
 	carData* myData = (carData*)data;
 
-	crossBridgeRandezvous(myData);
+	crossBridgeRendezvous(myData);
 
 	return 0;
 }
@@ -61,9 +53,7 @@ unsigned long WINAPI serverThread(void* data)
 			taskQueue.pop();
 			if (!((bridgeCounter / 10 ^ car->parity) & 1))
 			{
-				car->lock.wait();
-				car->crossed = true;
-				car->lock.signal();
+				car->crossed.signal();
 				std::cout << "Car " << car->parity << " crossing the river.\n";
 				bridgeCounter++;
 			}
@@ -82,7 +72,7 @@ int main()
 {
 	timer = CreateEvent(nullptr, false, false, nullptr);
 
-	const int carCount = 40;
+	const uint32_t carCount = 40;
 	thread** cars = new thread*[carCount];
 	carData* carDatas = new carData[carCount];
 
@@ -90,7 +80,7 @@ int main()
 	thread* server = new thread();
 	server->start(serverThread, nullptr);
 
-	for (int i = 0; i < carCount; ++i) 
+	for (uint32_t i = 0; i < carCount; ++i)
 	{
 		carDatas[i].parity = i;
 		cars[i] = new thread();
@@ -101,7 +91,7 @@ int main()
 	abortServer = true;
 	server->wait();
 
-	for (int i = 0; i < carCount; ++i) 
+	for (uint32_t i = 0; i < carCount; ++i)
 	{
 		delete cars[i];
 	}

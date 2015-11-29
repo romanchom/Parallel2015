@@ -19,6 +19,7 @@ struct carData
 volatile bool abortServer;
 std::queue<carData*> taskQueue;
 semaphore taskQueueLock(1);
+HANDLE timer;
 
 void crossBridgeRandezvous(carData* data)
 {
@@ -29,9 +30,11 @@ void crossBridgeRandezvous(carData* data)
 	bool crossed = false;
 	while (!crossed)
 	{
-		data->lock.wait();
+		//data->lock.wait();
 		crossed = data->crossed;
-		data->lock.signal();
+		//data->lock.signal();
+
+		WaitForSingleObject(timer, 50);
 	}
 }
 
@@ -77,6 +80,8 @@ unsigned long WINAPI serverThread(void* data)
 
 int main()
 {
+	timer = CreateEvent(nullptr, false, false, nullptr);
+
 	const int carCount = 40;
 	thread** cars = new thread*[carCount];
 	carData* carDatas = new carData[carCount];
@@ -103,6 +108,8 @@ int main()
 	delete[] carDatas;
 	delete[] cars;
 	delete server;
+
+	CloseHandle(timer);
 
 	return 0;
 }
